@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Header from './components/header/Header.jsx'
+import MainSection from './components/sections/main/mainSection.jsx'
+import Preferences from './components/sections/prefs/prefsSection.jsx'
+import Services from './components/sections/services/servicesSection.jsx'
+import Feedback from './components/sections/feedback/feedback.jsx'
+import Footer from './components/footer.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+      <main style={{
+        overflowY: "auto",
+        scrollSnapType: 'mandatory',
+        scrollBehavior: 'smooth',
+      }}>
+            <Header/>
+            <MainSection/>
+            <Preferences/>
+            <Services/>
+            <Feedback/>
+            <Footer/>
+      </main>
+    )
 }
 
 export default App
