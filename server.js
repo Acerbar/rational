@@ -3,7 +3,7 @@ import { createTransport } from 'nodemailer';
 import cors from 'cors';
 
 const app = express();
-const PORT = 5000;
+// const PORT = 5000;
 
 
 app.use(express.json());
@@ -38,6 +38,6 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
