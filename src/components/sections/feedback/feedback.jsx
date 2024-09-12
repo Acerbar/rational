@@ -66,7 +66,7 @@ export default function Feedback() {
     setIsSubmitted(true);
     if (validateForm()) {
       try {
-        const response = await fetch('/server.js/api/send-email', {
+        const response = await fetch('server.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, message, phone: number }),
