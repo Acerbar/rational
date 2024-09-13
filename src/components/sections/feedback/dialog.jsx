@@ -47,8 +47,21 @@ const DialogTitle = styled(TitleH6)`
 font-size: clamp(13px, 2.5vw, 18px);
 `
 
-const Dialog = ({ open, onClose }) => {
+const Dialog = ({ open, onClose, language }) => {
   const modal = useRef();
+
+  const dialogTexts = {
+    en: {
+      text: "Thank you for your correspondence, we will respond as soon as possible!",
+      close: "Close",
+    },
+    sr: {
+      text: "Hvala na vašoj poruci, odgovorićemo u najkraćem mogućem roku!",
+      close: "Zatvori",
+    },
+  }
+
+  const currentTexts = dialogTexts[language] || dialogTexts.en;
 
   useEffect(() => {
     if (open) {
@@ -77,10 +90,9 @@ const Dialog = ({ open, onClose }) => {
       <DialogWrapper ref={modal}>
         <DialogInner>
           <DialogTitle>
-            Thank you for your correspondence, we will respond as soon as
-            possible!
+          {currentTexts.text}
           </DialogTitle>
-          <ButtonHovered onClick={onClose}>Close</ButtonHovered>
+          <ButtonHovered onClick={onClose}>{currentTexts.close}</ButtonHovered>
         </DialogInner>
       </DialogWrapper>
     </>,

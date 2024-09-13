@@ -1,12 +1,12 @@
 import logo from "/logo.jpg"
-import flag from "/SerbiaFlag.svg"
+import serbianFlag from "/SerbiaFlag.svg"
+import britishFlag from "/british-flag.svg"
 import './header.css'
 import MobileNav from "../mobileNav/mobileNav"
 import { useState, useEffect } from "react"
-import { NavLink, useLocation } from "react-router-dom"
 
 
-export default function Header(){
+export default function Header({ language, setLanguage }){
     const [isFixed, setIsFixed] = useState(false);
         useEffect(() => {
             const handleScroll = () => {
@@ -30,6 +30,23 @@ export default function Header(){
               section.scrollIntoView({ behavior: 'smooth' });
             }
           };
+
+          const navTexts = {
+            en: {
+                whyUs: 'Why Us',
+                whatWeDo: 'What We Do',
+                writeToUs: 'Write to Us'
+            },
+            sr: {
+                whyUs: 'Zašto Mi',
+                whatWeDo: 'Šta Radimo',
+                writeToUs: 'Pišite Nam'
+            }
+        };
+          const currentNavTexts = navTexts[language] || navTexts.en;
+          const handleLanguageChange = () => {
+            setLanguage(prevLang => (prevLang === 'en' ? 'sr' : 'en'));
+        };
     return (
         <>
         <header className={isFixed ? "header_fixed" : ""}>
@@ -40,23 +57,23 @@ export default function Header(){
                       <img src={logo} alt="logo" />
                     </a>
                   </div>
-                  <a className="lang-change">
-                    <img src={flag} alt="" />
-                    <p className="lang-link">Srpska</p>
+                  <a className="lang-change" onClick={handleLanguageChange}>
+                  <img src={language === 'en' ? serbianFlag : britishFlag} alt="Flag" />
+                    <p className="lang-link">{language === 'en' ? 'Srpska' : 'English'}</p>
                   </a>
               </div>
                 <div className="header-inner__content">
                     <nav className="header-nav">
-                      <a className="header-nav__link" id="nav-link-one" onClick={() => scrollToSection('.preferences')}>why us<span className="nav-span"></span>
+                      <a className="header-nav__link" id="nav-link-one" onClick={() => scrollToSection('.preferences')}>{currentNavTexts.whyUs}<span className="nav-span"></span>
                       </a>
-                      <a className="header-nav__link" id="nav-link-two" onClick={() => scrollToSection('.services')}>what we do<span className="nav-span"></span>
+                      <a className="header-nav__link" id="nav-link-two" onClick={() => scrollToSection('.services')}>{currentNavTexts.whatWeDo}<span className="nav-span"></span>
                       </a>
-                      <a className="header-nav__link" id="nav-link-three" onClick={() => scrollToSection('.feedback')}>write to us<span className="nav-span"></span>
+                      <a className="header-nav__link" id="nav-link-three" onClick={() => scrollToSection('.feedback')}>{currentNavTexts.writeToUs}<span className="nav-span"></span>
                       </a>
                     </nav>
                 </div>
             </div>
-            <MobileNav/>
+            <MobileNav language={language} setLanguage={setLanguage}/>
         </header>
         </>
     )

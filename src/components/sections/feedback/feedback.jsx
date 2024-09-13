@@ -6,7 +6,7 @@ import "intl-tel-input/styles";
 import "./feedback.css";
 import Dialog from "./dialog";
 
-export default function Feedback() {
+export default function Feedback({ language }) {
   const form = useRef();
   const phoneInputRef = useRef();
   const [name, setName] = useState('');
@@ -20,8 +20,41 @@ export default function Feedback() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [status, setStatus] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [feedbackKey, setFeedbackKey] = useState(Date.now()); // New state for rerender
+  const [feedbackKey, setFeedbackKey] = useState(Date.now()); 
 
+  const feedbackTexts = {
+    en: {
+        questions: 'Have questions?',
+        writeToUs: 'Write to us!',
+        name: 'Name',
+        phone: 'Phone',
+        email: 'E-mail',
+        message: 'Your message',
+        submit: 'Submit',
+        minTwoSymbols: 'Minimum two symbols',
+        correctEmail: 'Type in correct email',
+        minTenSymbols: 'Minimum ten symbols',
+        typeName: 'Type in your name',
+        typeMail: 'Type in your e-mail',
+        typeText: 'Type in your message',
+    },
+    sr: {
+        questions: 'Imate pitanja?',
+        writeToUs: 'Pišite nam!',
+        name: 'Ime',
+        phone: 'Telefon',
+        email: 'E-mail',
+        message: 'Vaša poruka',
+        submit: 'Pošaljite',
+        minTwoSymbols: 'Minimalno dva simbola',
+        correctEmail: 'Unesite ispravan e-mail',
+        minTenSymbols: 'Minimalno deset simbola',
+        typeName: 'Unesite svoje ime',
+        typeMail: 'Unesite svoj e-mail',
+        typeText: 'Unesite svoju poruku',
+    }
+};
+ const currentTexts = feedbackTexts[language] || feedbackTexts.en;
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -30,9 +63,9 @@ export default function Feedback() {
     const emailValid = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
     const messageValid = message.length >= 10;
 
-    setNameError(nameValid ? '' : 'Minimum two symbols');
-    setEmailError(emailValid ? '' : 'Type in correct email');
-    setMessageError(messageValid ? '' : 'Minimum ten symbols');
+    setNameError(nameValid ? '' : currentTexts.minTwoSymbols);
+        setEmailError(emailValid ? '' : currentTexts.correctEmail);
+        setMessageError(messageValid ? '' : currentTexts.minTenSymbols);
 
     return nameValid && emailValid && messageValid && isValid;
   };
@@ -41,7 +74,7 @@ export default function Feedback() {
     const value = event.target.value.trim();
     setName(value);
     if (isSubmitted) {
-      setNameError(value.length < 2 ? 'Minimum two symbols' : '');
+      setNameError(value.length < 2 ? currentTexts.minTwoSymbols : '');
     }
   };
 
@@ -49,7 +82,7 @@ export default function Feedback() {
     const value = event.target.value.trim();
     setEmail(value);
     if (isSubmitted) {
-      setEmailError(!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? 'Type in correct email' : '');
+      setEmailError(!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? currentTexts.correctEmail : '');
     }
   };
 
@@ -57,7 +90,7 @@ export default function Feedback() {
     const value = event.target.value.trim();
     setMessage(value);
     if (isSubmitted) {
-      setMessageError(value.length < 10 ? 'Minimum ten symbols' : '');
+      setMessageError(value.length < 10 ? currentTexts.minTenSymbols : '');
     }
   };
 
@@ -66,7 +99,7 @@ export default function Feedback() {
     setIsSubmitted(true);
     if (validateForm()) {
       try {
-        const response = await fetch('server.js', {
+        const response = await fetch('http://localhost:5000/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, message, phone: number }),
@@ -80,7 +113,7 @@ export default function Feedback() {
           setNumber('');
           setIsSubmitted(false);
           setStatus('');
-          setFeedbackKey(Date.now()); // Force rerender
+          setFeedbackKey(Date.now()); 
           openModal(); 
         } else {
           setStatus('Failed to send email');
@@ -93,17 +126,17 @@ export default function Feedback() {
   };
 
   return (
-    <section className="feedback" key={feedbackKey}> {/* Trigger rerender when feedbackKey changes */}
+    <section className="feedback" key={feedbackKey}> 
       <div className="container">
-        <TitleH3>Have questions?</TitleH3>
-        <TitleH4>Write to us!</TitleH4>
+        <TitleH3>{currentTexts.questions}</TitleH3>
+        <TitleH4>{currentTexts.writeToUs}</TitleH4>
         <form id="form" className="feedback-form" ref={form} onSubmit={sendEmail}>
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">{currentTexts.name}</label>
           <input
             type="text"
             name="name"
             id="name"
-            placeholder="Type in your name"
+            placeholder={currentTexts.typeName}
             value={name}
             onChange={handleName}
             required
@@ -111,7 +144,7 @@ export default function Feedback() {
           />
           {nameError && <div style={{ color: 'red' }}>{nameError}</div>}
           
-          <label htmlFor="phone">Phone</label>
+          <label htmlFor="phone">{currentTexts.phone}</label>
           <IntlTelInput
             ref={phoneInputRef}
             name="phone"
@@ -122,12 +155,12 @@ export default function Feedback() {
             initOptions={{ initialCountry: "us" }}
           />
           
-          <label htmlFor="email">E-mail</label>
+          <label htmlFor="email">{currentTexts.email}</label>
           <input
             type="email"
             id="email"
             name="email"
-            placeholder="Type in your e-mail"
+            placeholder={currentTexts.typeMail}
             value={email}
             onChange={handleEmail}
             required
@@ -135,12 +168,12 @@ export default function Feedback() {
           />
           {emailError && <div style={{ color: 'red' }}>{emailError}</div>}
           
-          <label htmlFor="textarea">Your message</label>
+          <label htmlFor="textarea">{currentTexts.message}</label>
           <textarea
             name="message"
             id="textarea"
             rows="10"
-            placeholder="Type in your message"
+            placeholder={currentTexts.typeText}
             value={message}
             onChange={handleMessage}
             required
@@ -149,7 +182,7 @@ export default function Feedback() {
           {messageError && <div style={{ color: 'red' }}>{messageError}</div>}
           
           <button className="feedback-button" type="submit">
-            Submit
+          {currentTexts.submit}
           </button>
           {status && <p>{status}</p>}
         </form>
